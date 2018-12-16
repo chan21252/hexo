@@ -22,6 +22,7 @@ categories:
 - [Linux安装git](http://blog.5460cc.com/2018/12/09/install-git-on-centos/)
 - [Linux安装nginx](http://blog.5460cc.com/2018/12/09/install-nginx-on-centos/)
 
+<!-- more -->
 
 ## git设置
 ### git命令添加软连接

@@ -13,6 +13,7 @@ categories:
 ``` bash
 wget http://cdn.npm.taobao.org/dist/node/v10.14.1/node-v10.14.1.tar.gz
 ```
+<!-- more -->
 
 ## 安装依赖工具
 ``` bash

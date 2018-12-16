@@ -16,6 +16,7 @@ categories:
 ``` bash
 wget http://nginx.org/download/nginx-1.14.2.tar.gz
 ```
+<!-- more -->
 
 ## 二、安装依赖工具
 yum安装

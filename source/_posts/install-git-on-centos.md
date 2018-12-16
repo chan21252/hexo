@@ -14,6 +14,7 @@ categories:
 github：[https://github.com/git/git/releases](https://github.com/git/git/releases)
 官网：[http://git-scm.com/download](http://git-scm.com/download)
 
+<!-- more -->
 
 ## 二、安装依赖工具
 git的工作需要调用 curl，zlib，openssl，expat，libiconv 等库的代码，所以需要先安装这些依赖工具。

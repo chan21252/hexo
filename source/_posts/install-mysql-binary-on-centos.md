@@ -15,6 +15,8 @@ categories:
 选择如下文件下载：
 ![mysql下载文件选择](http://pjj1fddwq.bkt.clouddn.com/image/blog/install-mysql-binary-on-centos/001.jpg 'mysql下载文件选择')
 
+<!-- more -->
+
 ### wget下载：
 ``` bash
 # root用户执行
