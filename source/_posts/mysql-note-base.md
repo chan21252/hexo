@@ -48,8 +48,8 @@ SHOW CREATE DATABASE [数据库名称];   # 查询数据库创建语句
 
 /* 创建数据库 */
 CREATE DATABASE IF NOT EXISTS [数据库名称];
-CREATE DATABASE [数据库名称] SET CHARACTER GBK;
-create database [数据库名称] if not exists set character [字符集];
+CREATE DATABASE [数据库名称] CHARACTER SET GBK;
+create database [数据库名称] if not exists character set [字符集];
 
 /* 修改数据库 */
 alter database [数据库名称] character set utf8;      修改字符集
@@ -393,4 +393,256 @@ ALTER TABLE employee ADD CONSTRAINT emp_dept_fk FOREIGN KEY (dep_id) REFERENCES 
         3. 使用数据库
         4. 执行文件。source 备份文件
 2. 使用图形工具
+
+## 多表查询
+### 内连接查询
+1. 显式内连接：
+    语法：`` select 字段 from 表1 inner join 表2 on 条件; ``
+    含义：获取两表条件相匹配的记录
+2. 隐式内连接：用where条件消除无用数据
+
+### 外连接查询
+1. 左外连接
+    语法：`` select 字段列表 from 表1 left [outer] join 表2 on 条件; ``
+    含义：获取左表所有记录，即使右表没有对应匹配的记录
+2. 右外连接
+    语法：`` select 字段列表 from 表1 right [outer] join 表2 on 条件; ``
+    含义：获取右表所有记录，即使左表没有对应匹配的记录
+
+### 子查询
+概念：查询中嵌套查询，嵌套查询称为子查询
+子查询的不同情况：
+1. 子查询结果是单行单列的，子查询作为条件，使用运算符：\> >= < <= =
+2. 子查询结果是多行单列的，子查询作为条件，使用运算符：in
+3. 子查询结果是多行多列的，子查询可以作为一张虚拟表
+
+### 练习
+``` sql
+-- 准备
+-- 创建数据库
+DROP DATABASE IF EXISTS db2;
+CREATE DATABASE db2 CHARACTER SET utf8;
+
+USE db2;
+
+-- 创建表
+DROP TABLE IF EXISTS department;
+DROP TABLE IF EXISTS employee;
+
+CREATE TABLE department(
+	id INT PRIMARY KEY,
+	NAME VARCHAR(20) NOT NULL,
+	location VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE employee(
+	id INT PRIMARY KEY,
+	NAME VARCHAR(20) NOT NULL,
+	salary DOUBLE NOT NULL,
+	join_date DATE NOT NULL,
+	dep_id INT,
+	CONSTRAINT emp_dep_fk FOREIGN KEY (dep_id) REFERENCES department(id)
+);
+
+-- 插入数据
+INSERT INTO department VALUES(1, '研发部', '广州'), (2, '销售部', '广州'), (3, '财务部', '深圳');
+
+INSERT INTO employee (NAME, salary, join_date, dep_id) VALUES ('孙悟空', 7200, '2015-10-01', 1);
+INSERT INTO employee (NAME, salary, join_date, dep_id) VALUES ('猪八戒', 6000, '2016-03-01', 1);
+INSERT INTO employee (NAME, salary, join_date, dep_id) VALUES ('唐僧', 9500, '2014-05-01', 2);
+INSERT INTO employee (NAME, salary, join_date, dep_id) VALUES ('沙悟净', 5200, '2016-12-01', 2);
+INSERT INTO employee (NAME, salary, join_date, dep_id) VALUES ('白龙马', 4500, '2015-11-01', 3);
+
+-- 使得两表主键自增
+ALTER TABLE employee DROP FOREIGN KEY emp_dep_fk;
+ALTER TABLE department MODIFY id INT AUTO_INCREMENT;
+ALTER TABLE employee ADD CONSTRAINT emp_dep_fk FOREIGN KEY (dep_id) REFERENCES department(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE employee MODIFY id INT AUTO_INCREMENT;
+
+-- 内连接查询
+-- 查询所有员工的部门信息
+-- 隐式
+SELECT 
+	t1.`name`, t2.`name`
+FROM
+	employee t1, department t2
+WHERE
+	t1.`dep_id` = t2.`id`;
+	
+-- 显式
+SELECT
+	t1.`name`, t2.`name`
+FROM
+	employee t1 INNER JOIN department t2
+ON
+	t1.`dep_id` = t2.`id`;
+
+-- 外连接查询
+-- 新来一个员工，但是还没有部门
+INSERT INTO employee (NAME, salary, join_date) VALUES ('白骨精', 7000, '2019-03-24');
+
+-- 查询所有员工的信息以及部门信息
+SELECT
+	t1.*, t2.`name`
+FROM
+	employee t1 LEFT OUTER JOIN department t2
+ON
+	t1.`dep_id` = t2.`id`;
+
+-- 子查询
+-- 查询工资最高员工的信息
+SELECT * FROM employee WHERE salary = (SELECT MAX(salary) FROM employee);
+
+-- 查询财务部和研发部所有员工的信息
+SELECT
+	*
+FROM
+	employee
+WHERE
+	dep_id IN (SELECT id FROM department WHERE NAME IN ('财务部', '研发部'));
+
+-- 查询工资高于平均工资员工的名字,工资和部门
+SELECT
+	t1.`name`, t1.`salary`, t2.`name`
+FROM
+	employee t1 LEFT JOIN department t2
+ON
+	t1.`dep_id` = t2.`id`
+WHERE
+	salary > (SELECT AVG(salary) FROM employee);
+	
+-- 查询入职日期是2017年以前员工的信息(包括部门信息)\
+-- 找出2017年以前入职员工的信息，再和department表内连接
+SELECT
+	t_d.`name`, t_e.*
+FROM
+	department t_d, (SELECT * FROM employee WHERE join_date < '2017-01-01') t_e
+WHERE
+	t_d.`id` = t_e.`dep_id`;
+	
+-- 先内连接再where判断
+```
+
+## 事务
+### 事务的基本介绍
+概念：如果一个包含多个步骤的业务操作，被一个事务管理，要么同时成功，要么同时失败。
+举例：张三转账500元给李四，1.张三余额>500；2.张三金额-500；3.李四金额+500
+操作：
+1. 开启事务
+2. 提交
+3. 回滚
+
+``` sql
+DROP DATABASE IF EXISTS db3;
+CREATE DATABASE IF NOT EXISTS db3 DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+USE db3;
+
+CREATE TABLE account(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	NAME VARCHAR(20) NOT NULL,
+	balance DOUBLE NOT NULL
+);
+
+INSERT INTO account (NAME, balance) VALUES('张三', 1000);
+INSERT INTO account (NAME, balance) VALUES('李四', 1000);
+
+UPDATE account SET balance = 1000 WHERE NAME = '张三';
+UPDATE account SET balance = 1000 WHERE NAME = '李四';
+
+SELECT * FROM account;
+
+-- 张三转500元给李四
+-- 0. 开启事务
+START TRANSACTION;
+
+-- 1. 业务语句
+UPDATE account SET balance = balance - 500 WHERE NAME = '张三';
+UPDATE account SET balance = balance + 500 WHERE NAME = '李四';
+
+-- 2. 提交事务
+COMMIT;
+
+-- 3. 失败回滚
+ROLLBACK;
+```
+
+mysql中事务默认自动提交。
+1. 自动提交：在mysql中，一条DML（增删改）语句默认提交一次事务。
+2. 手动提交：需要先开启事务，再提交（commit），开启事务不commit，DML执行回滚。
+3. 查看事务的默认提交方式：`` SELECT @@autocommit; `` -- 1 自动提交，0 手动提交
+4. 修改事务的默认提交方式：`` SET @@autocommit = 0; ``
+
+### 事务的四大特征(ACID)
+1. 原子性：是不可分割的最小操作单位，要么同时成功，要么同时失败。
+2. 持久性：当事务提交或回滚后，数据库会持久化保存数据。
+3. 隔离性：多个事务之间，相互独立。
+4. 一致性：事务操作前后，数据总量不变。
+
+### 事务的隔离级别
+概念：多个事务之间隔离的，但是多个事务操作同一批数据，会引发一些问题，设置不同的隔离级别可以解决问题。
+
+存在的问题：
+1. 脏读：一个事务，读取到另一个事务中没有提交的数据。
+2. 不可重复读：同一个事务中，两次读取到的数据不同。
+3. 幻读：一个事务操作（DML）数据表中所有记录，另一个事务添加了一条数据，第一个事务则查询不到自己的修改
+
+隔离级别：
+1. read uncommitted：读未提交
+    产生的问题：脏读、不可重复读、幻读
+2. read committed：读已提交（Oracle默认）
+    产生的问题：不可重复读、幻读
+3. repeatable read：可重复读（mysql默认）
+    产生的问题：幻读
+4. serializable：串行化
+    可以解决所有的问题
+
+\* 注意：隔离级别从小到大安全性越来越高，但是效率越来越低。
+
+查询隔离级别：
+`` select @@tx_isolation; ``
+
+设置隔离级别：
+`` SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED; ``
+
+## 用户权限管理DCL
+### 管理用户
+
+``` sql
+-- 查询用户
+USE msyql;
+SELECT * FROM USER;
+
+-- 添加用户
+CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';
+
+-- 删除用户
+DROP USER '用户名'@'主机名';
+
+-- 修改密码
+UPDATE USER SET PASSWORD=PASSWORD('新密码') WHERE USER='用户名';
+SET PASSWORD FOR '用户名'@'主机名' = PASSWORD('新密码');
+
+/*
+忘记root密码？
+1. 停止mysql服务
+2. 使用无验证方式启动mysql
+3. 无密码登录mysql，修改密码
+4. 重启mysql服务，以新密码登录
+*/
+msyqld --skip-grant-tables
+mysql
+
+-- 查询用户权限
+SHOW GRANTS FOR '用户名'@'主机名';
+
+-- 授予权限
+GRANT 权限列表 ON 数据库名.表名 TO '用户名'@'主机名';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+
+-- 撤销用户权限
+REVOKE 权限列表 ON 数据库名.表名 FROM '用户名'@'主机名';
+
+```
+
 
