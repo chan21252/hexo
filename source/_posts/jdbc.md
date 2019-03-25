@@ -8,12 +8,14 @@ category:
 - java
 ---
 
-## JDBC入门
-### 概念
+## 一、JDBC入门
+### 1、概念
 
 JDBC是SUN公司定义的一套操作所有关系型数据库的java接口，各个数据库厂商去实现接口，提供数据库驱动jar包。JDBC编程真正执行的代码是驱动jar包中的实现类。
 
-### 快速入门
+<!-- more -->
+
+### 2、快速入门
 
 1. 导入驱动jar包
 2. 注册驱动
@@ -26,27 +28,25 @@ JDBC是SUN公司定义的一套操作所有关系型数据库的java接口，各
 
 驱动jar包下载地址：[https://dev.mysql.com/downloads/connector/j/5.1.html](https://dev.mysql.com/downloads/connector/j/5.1.html)
 
-## JDBC对象详解
-### DriverManager（驱动管理对象）
+## 二、JDBC对象详解
+### 1、DriverManager（驱动管理对象）
 功能：
 1. 注册驱动
-    1. com.mysql.jdbc.Driver类中存在静态代码块
-    2. 
 2. 获取数据库连接
     `` static Connection getConnection(String url, String user, String password) ``
 
 
-### Connection（数据库连接对象）
+### 2、Connection（数据库连接对象）
 功能：
 1. 获取执行sql语句的对象
-   1. Statement createStatement()
-   2. PreparedStatement prepareStatement(String sql)
+   （1）Statement createStatement()
+   （2）PreparedStatement prepareStatement(String sql)
 2. 管理事务
-   1. 开启事务：void setAutoCommit(boolean autoCommit)，设置参数为false则开启事务
-   2. 提交事务：commit()
-   3. 回滚事务：rollback()
+   （1）开启事务：void setAutoCommit(boolean autoCommit)，设置参数为false则开启事务
+   （2）提交事务：commit()
+   （3）回滚事务：rollback()
 
-### Statement（执行sql对象）
+### 3、Statement（执行sql对象）
 
 功能：
 1. 执行sql语句
@@ -54,7 +54,7 @@ JDBC是SUN公司定义的一套操作所有关系型数据库的java接口，各
    2. int executeUpdate(String sql)：执行DML，DDL
    3. ResultSet	executeQuery(String sql)：执行DQL
 
-### ResultSet（结果集对象）
+### 4、ResultSet（结果集对象）
 
 ResultSet 对象具有指向其当前数据行的光标。最初，光标被置于第一行之前。next 方法将光标移动到下一行；因为该方法在 ResultSet 对象没有下一行时返回 false，所以可以在 while 循环中使用它来迭代结果集。
 
@@ -65,7 +65,7 @@ ResultSet 对象具有指向其当前数据行的光标。最初，光标被置�
       1. int：代表列的编号，从1开始
       2. String：列的字段名称
 
-### PreparedStatement（执行sql对象）
+### 5、PreparedStatement（执行sql对象）
 功能：
 1. 解决sql注入问题，使用？作为占位符预编译sql语句。
 2. 效率更高
@@ -77,22 +77,25 @@ PreparedStatement pstmt = con.prepareStatement("UPDATE EMPLOYEES
    pstmt.setInt(2, 110592)
 ```
 
-## JDBC控制事务
-1.
+## 三、JDBC控制事务
+1. 开启事务：void setAutoCommit(boolean autoCommit)，设置参数为false则开启事务
+2. 提交事务：commit()
+3. 回滚事务：rollback()
 
 
-## 数据库连接池
-###概念
+## 四、数据库连接池
+### 1、概念
 
+数据库连接池负责分配、管理和释放数据库连接，它允许应用程序重复使用一个现有的数据库连接，而不是再重新建立一个；释放空闲时间超过最大空闲时间的数据库连接来避免因为没有释放数据库连接而引起的数据库连接遗漏。这项技术能明显提高对数据库操作的性能。
 
-### 实现
-1. 标准接口：
-2. 别人已实现的连接池：
+### 2、实现
+1. 标准接口：javax.sql.DataSource
+2. 开源连接池：
     1. C3P0
     2. Druid（阿里巴巴提供）
 
 
-### C3P0
+### 3、C3P0
 
 官方地址：[https://www.mchange.com/projects/c3p0/](https://www.mchange.com/projects/c3p0/)
 
@@ -161,7 +164,7 @@ c3p0-config.xml
 </c3p0-config>
 ```
 
-### Druid
+### 4、Druid
 1. 导入jar包
 2. 定义配置文件druid.properties
 3. 加载配置文件
