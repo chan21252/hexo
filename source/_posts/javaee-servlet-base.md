@@ -1,5 +1,5 @@
 ---
-title: Servlet基础
+title: JavaEE-Servlet基础
 date: 2019-03-27 10:05:37
 tags:
 - java
@@ -202,9 +202,12 @@ Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
 username=chan21252
 ```
 
-
 ### 2.3 响应消息数据格式
-
+1. 响应行
+   1. 格式 `` 协议/版本 响应状态码 状态码描述
+2. 响应头
+3. 响应空行
+4. 响应体：传输的数据
 
 ## 三、Request
 ### request对象和response对象的原理
@@ -310,10 +313,18 @@ public class RequestServletDemo" extends HttpServlet {
 }
 ```
 
-
-
-
-
-
-
+## 四、Response
+### 4.1 功能：
+1. 设置响应行
+   1. 设置响应状态码：`` resp.setStatus(200); ``
+2. 设置响应头
+   1. 设置响应头属性值: `` resp.setHeader(String name, String value); ``
+3. 设置响应体
+   1. 返回数据给浏览器
+      1. 输出字节流: `` ServletOutputStream getOutputStream(); ``
+      2. 输出字符流：`` PrintWriter getWriter(); ``
+4. 重定向：`` resp.sendRedirect(String url); ``
+   1. 浏览器地址改变
+   2. 重定向可以访问其他服务器的资源
+   3. 重定向是两次请求，无法使用request对象来共享数据
 
