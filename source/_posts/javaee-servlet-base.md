@@ -328,3 +328,24 @@ public class RequestServletDemo" extends HttpServlet {
    2. 重定向可以访问其他服务器的资源
    3. 重定向是两次请求，无法使用request对象来共享数据
 
+## 五、ServletContext
+概念：代表整个web应用，可以和servlet容器（tomcat）来通信。
+
+功能：
+1. 获取MIME类型
+   1. MIME：互联网通信过程中定义的文件数据类型，格式 大类/小类型 text/html，image/jpeg
+   2. 获取：`` String getMimeType(String file); ``
+2. 共享数据（作用域：整个应用）：
+   1. ``setAttribute(String name, Object value);``
+   2. ``getAttribute(String name);``
+   3. ``removeAttribute(String name);``
+3. 获取文件的真实路径（服务器路径）:`` servletContext.getRealPath(String filePath) ``
+
+获取ServletContext对象：
+1. `` request.getServletContext(); ``
+2. `` this.getServletContext(); ``
+
+获取服务器的资源
+`` servletContext.getRealPath(String file) ``
+
+
