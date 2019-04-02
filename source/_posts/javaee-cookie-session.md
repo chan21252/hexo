@@ -125,3 +125,6 @@ Session:在计算机中，尤其是在网络应用中，称为“会话控制”
 - session默认失效时间 30min
   - 可以修改web.xml的配置<session-config\></session-config\>
 
+### 3.4 案例：验证码校验
+代码：[https://github.com/chan21252/VerifyCodeDemo](https://github.com/chan21252/VerifyCodeDemo)
+
