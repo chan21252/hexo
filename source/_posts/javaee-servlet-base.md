@@ -348,4 +348,81 @@ public class RequestServletDemo" extends HttpServlet {
 获取服务器的资源
 `` servletContext.getRealPath(String file) ``
 
+## 六、Filter过滤器
 
+### 6.1 概念：
+Servlet 过滤器可以动态地拦截请求和响应，以变换或使用包含在请求或响应中的信息。
+
+可以将一个或多个 Servlet 过滤器附加到一个 Servlet 或一组 Servlet。Servlet 过滤器也可以附加到 JavaServer Pages (JSP) 文件和 HTML 页面。调用 Servlet 前调用所有附加的 Servlet 过滤器。
+
+Servlet 过滤器是可用于 Servlet 编程的 Java 类，可以实现以下目的：
+
+在客户端的请求访问后端资源之前，拦截这些请求。
+在服务器的响应发送回客户端之前，处理这些响应。
+
+### 6.2 快速入门：
+1. 定义一个类实现Filter接口
+2. 重写方法
+    3. 设置放行：``filterChain.doFilter(request, response) ``
+3. 配置拦截路径
+    1. web.xml
+    2. 注解 `` @WebFilter("/") ``
+
+### 6.3 过滤器技术细节
+#### 1. web.xml配置
+
+``` xml
+<!--web.xml-->
+<filter>
+    <filter-name></filter-name>
+    <filter-class></filter-class>
+</filter>
+<filter-mapping>
+    <filter-name></filter-name>
+    <url-pattern></url-pattern>
+</filter-mapping>
+```
+#### 2. 过滤器执行流程
+1. 执行过滤器，处理请求
+2. 放行
+3. 继续执行放行后的代码，主要处理响应
+
+#### 3. 过滤器生命周期
+1. init：服务器启动后，创建Filter对象，执行init()方法，仅执行一次。
+2. doFilter：每一次请求拦截资源时，会执行
+3. destroy：服务器关闭后，Filter对象被销毁，如果是正常关闭，会执行destroy方法。只执行一次。
+
+#### 4. 过滤器配置详解
+1. 拦截路径配置
+    1. 具体资源路径：/index.jsp
+    2. 目录拦截：/user/*
+    3. 后缀名拦截：*.jsp
+    4. 拦截所有资源：*
+2. 拦截方式配置：资源被访问的方式过滤
+设置dispatcherTypes属性：
+- REQUEST：默认值，浏览器直接请求资源
+- FORWARD：转发访问资源
+- INCLUDE：包含访问资源
+- ERROR：错误跳转资源
+- ASYNC：异步访问资源
+
+#### 5. 过滤器链
+执行顺序，如果有两个过滤器，过滤器1和2
+1. 过滤器1
+2. 过滤器2
+3. 资源执行
+4. 过滤器2
+5. 过滤器1
+
+过滤器执行先后顺序
+1. 注解配置：按照类名的字符串比较规则比较，值小的先执行
+2. web.xml配置：<filter-mapping>谁定义在前面，谁先执行
+
+## 七、Listener
+概念：
+事件监听机制，事件、事件源、监听器绑定在一起，事件源发生某个事件后，执行监听器代码。
+
+快速实现：
+1. 定义一个类，实现监听器接口
+2. 复写方法
+3. 配置监听器
