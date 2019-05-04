@@ -128,6 +128,42 @@ finally和try中同时存在return，finally的return会覆盖try的结果。
 
 //to-do
 
+## 二、断言
+
+假设某个属性符合要求，程序的执行依赖属性，那么可以使用断言来测试属性是否符合要求。
+
+### 2.1 断言语法：
+1. assert 条件;
+2. assert 条件:表达式;
+
+条件为false，程序会抛出AssertionError，第二种形式中表达式的值会传给AssertionError
+
+``` java
+int x = -1;
+assert x>=0:"x不能小于0";
+
+Math.sqrt(x);
+
+/*
+Exception in thread "main" java.lang.AssertionError: x不能小于0
+	at c07.AseertDemo01.main(AseertDemo01.java:6)
+*/
+```
+
+### 2.2 启用和禁用断言
+jvm默认禁用断言，启用和禁用断言是类加载器的功能，断言被禁用时，类加载器会跳过断言代码。
+
+- 启用断言：java -enableassertions MyApp
+- 禁用断言：java -disableassertions MyApp
+- 对某个包/类使用断言：java -enableassertions:com.my.assert -ea:MyClass MyApp
+
+### 2.3 断言的使用场景
+断言失败是致命的，不可恢复的错误；
+断言检查只用于开发和测试阶段；
+断言只用来确定程序内部的错误位置，不能用于向程序其他部分发送消息或者告知用户错误。
+
+
+## 三、日志
 
 
 
