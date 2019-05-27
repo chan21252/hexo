@@ -131,3 +131,44 @@ fastRemove()方法中，modCount++;
 ArrayList线程不安全，List保证其遍历时不被修改，采用的是用一个计数器的机制。
 在开始遍历前，先记录当前的modCount值，而后每次访问下一个元素之前，都会检查下modCount值是否变化，如果有变化，说明List的长度有变化。
 一旦长度有变化，就会抛出ConcurrentModificationException异常。
+
+## 三、Map接口和实现类
+
+Map是存储键值对象的顶级集合接口。
+存储在Map集合中的键值对象必须确保键是唯一的，添加键相同的对象到Map中会产生覆盖。
+
+### 常用方法
+
+1. 增
+    1. 添加一个键值对象 put
+2. 删
+    1. 删除某个键的键值对象 remove
+    2. 清空 clear
+3. 查
+    1. 根据键查找值 get
+    2. 是否包含某个键 containsKey
+    3. 是否包含某个值 containsValue
+    4. 集合长度 size
+    5. 获取键的集合 keySet
+    6. 获取值得集合 values
+    7. 是否为空 isEmpty
+4. 改
+    1. 覆盖 put
+
+### Map实现类——HashMap
+
+HashMap是基于哈希表的Map接口实现类。
+HashMap不保证映射的顺序。
+HashMap不是线程安全的。
+
+### Map实现类——TreeMap
+
+TreeMap基于红黑树的NavigableMap实现。NavigableMap是SortedMap的子接口。
+TreeMap依据自然顺序对键进行排序，可以指定Comparator排序规则。
+TreeMap不是线程安全的。
+
+### Map实现类——Hashtable
+
+Hashtable是线程安全的，但是效率比HashMap低。
+Hashtable不能存储null键值。
+Hashtable和HashMap的用法几乎是一样的。
