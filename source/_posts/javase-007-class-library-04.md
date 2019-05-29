@@ -28,6 +28,8 @@ List接口间接继承Iterable接口，它的直接父接口Collection定义了�
 10. int indexOf(String target, int fromIndex)
 11. int size()                              返回List的长度
 
+<!-- more -->
+
 增删改查：
 1. 增
     1. add
