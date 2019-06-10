@@ -253,3 +253,51 @@ byte的最大值是128，将int类型的129强制转换赋值给byte变量，为
 参考文章:
 [“补码”的数学原理](https://blog.csdn.net/wu_nan_nan/article/details/54633506)
 [原码, 反码, 补码 详解](https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html)
+
+## 七、枚举类型
+
+### 枚举概述
+
+1. 枚举是自定义引用类型，使用关键字enum关键字修饰类
+2. 枚举通常包含一组常量数据，适合某种事物固定的组成结构（比如季节有“春夏秋冬”）
+3. 枚举类型可以实现某个接口，但是枚举类型不能继承和被继承
+4. 枚举类型可以定义非抽象方法，方法必须在常量之后。
+
+### 枚举的定义
+
+``` java
+public enum SignalLamp {
+    /* 枚举的常量 */
+    RED,
+    GREEN,
+    YELLOW
+}
+```
+
+### 常用方法
+
+``` java
+public class TestEnum {
+    public static void main(String[] args) {
+        //访问常量
+        System.out.println(SignalLamp.RED);
+
+        //用索引访问常量
+        System.out.println(SignalLamp.values()[1]);
+
+        //比较，大于返回1，小于返回-1，等于返回0
+        System.out.println(SignalLamp.YELLOW.compareTo(SignalLamp.GREEN));
+
+        //获取常量名
+        System.out.println(SignalLamp.YELLOW.name());
+
+        //获取常量索引
+        System.out.println(SignalLamp.YELLOW.ordinal());
+
+        //获取常量数组，并遍历
+        for (SignalLamp e : SignalLamp.values()){
+            System.out.println(e.name());
+        }
+    }
+}
+```
